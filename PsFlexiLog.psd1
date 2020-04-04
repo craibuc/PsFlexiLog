@@ -33,7 +33,7 @@ Copyright = '(c) Cogniza, Inc. All rights reserved.'
 Description = 'Functions for logging.'
 
 # Minimum version of the PowerShell engine required by this module
-# PowerShellVersion = ''
+PowerShellVersion = '7.0.0'
 
 # Name of the PowerShell host required by this module
 # PowerShellHostName = ''
@@ -94,16 +94,14 @@ PrivateData = @{
 
     PSData = @{
 
-        Prerelease = 'beta'
-
         # Tags applied to this module. These help with module discovery in online galleries.
-        # Tags = @()
+        Tags = @('PowerShell','logging')
 
         # A URL to the license for this module.
-        # LicenseUri = ''
+        LicenseUri = 'https://github.com/craibuc/PsFlexiLog/blob/master/LICENSE'
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+        ProjectUri = 'https://github.com/craibuc/PsFlexiLog'
 
         # A URL to an icon representing this module.
         # IconUri = ''
@@ -112,7 +110,7 @@ PrivateData = @{
         # ReleaseNotes = ''
 
         # Prerelease string of this module
-        # Prerelease = ''
+        Prerelease = 'alpha'
 
         # Flag to indicate whether the module requires explicit user acceptance for install/update/save
         # RequireLicenseAcceptance = $false
@@ -125,7 +123,7 @@ PrivateData = @{
 } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
-# HelpInfoURI = ''
+HelpInfoURI = 'https://github.com/craibuc/PsFlexiLog/blob/master/README.md'
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
