@@ -9,12 +9,10 @@ function Initialize-EventLogLog {
         [string]$LogName='Application',
 
         [Parameter(Position=2)]
-        # [ValidateSet("Information", "Warning", "Error")]
-        # [ValidateSet('None','Error','Warning','Information','Debug')]
-        # [string]$LogLevel = 'Error'
         [Levels]$LogLevel = [Levels]::Error
     )
 
+    Write-Debug $MyInvocation.MyCommand.Name
     # Write-Debug "LogName: $LogName"
     # Write-Debug "Source: $Source"
     # Write-Debug "LogLevel: $LogLevel"
