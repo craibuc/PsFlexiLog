@@ -1,55 +1,77 @@
+Import-Module PsFlexiLog -Force
+
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
-Describe "Initialize-FileLog" -Tag 'unit' {
+InModuleScope 'PsFlexiLog' {
 
-    Context "Parameter validation" {
-        Context "Path" {
-            It "it is a string" {
-                Get-Command "Initialize-FileLog" | Should -HaveParameter 'Path' -Type string
-            }
-        }
+    Describe "Initialize-FileLog" -Tag 'unit' {
 
-        Context "LogLevel" {
-            It "it is an enumeration of type Levels" {
-                Get-Command "Initialize-FileLog" | Should -HaveParameter 'LogLevel' -Type [Levels]
-            }
-            It "its default value is 'Information'" -skip {
-                $true | Should -Be $false
-            }
-        }
+        Context "Parameter validation" {
+            Context "-Path" {
+                It "is a [String]" {
+                    Get-Command "Initialize-FileLog" | Should -HaveParameter 'Path' -Type string
+                }
+                It "is mandatory" {
+                    Get-Command "Initialize-FileLog" | Should -HaveParameter 'Path' -Mandatory
+                }
+            } # /context
 
-        Context "Delimiter" {
-            It "it is a string" {
-                Get-Command "Initialize-FileLog" | Should -HaveParameter 'Delimiter' -Type string
-            }
-            It "its default value is ','" -skip {
-                $true | Should -Be $false
-            }
-        }
+            Context "-Source" {
+                It "is a [String]" {
+                    Get-Command "Initialize-FileLog" | Should -HaveParameter 'Source' -Type string
+                }
+                It "is mandatory" {
+                    Get-Command "Initialize-FileLog" | Should -HaveParameter 'Source' -Mandatory
+                }
+            } # /context
 
-    }
+            Context "-LogLevel" {
+                It "is [Levels] enumeration" {
+                    Get-Command "Initialize-FileLog" | Should -HaveParameter 'LogLevel' -Type [Levels]
+                }
+                It "is optional" {
+                    Get-Command "Initialize-FileLog" | Should -HaveParameter 'LogLevel' -Not -Mandatory
+                }
+                It "has a default value of 'Information'" -skip {
+                    $true | Should -Be $false
+                }
+            } # /context
 
-    InModuleScope 'PsFlexiLog' {
+            Context "-Delimiter" {
+                It "is a [String]" {
+                    Get-Command "Initialize-FileLog" | Should -HaveParameter 'Delimiter' -Type string
+                }
+                It "is optional" {
+                    Get-Command "Initialize-FileLog" | Should -HaveParameter 'Delimiter' -Not -Mandatory
+                }
+                It "has adefault value of ','" -skip {
+                    $true | Should -Be $false
+                }
+            } # /context
+
+        } # /context
 
         # arrange
         $Path = '~/Desktop/error.log'
+        $Source = 'DoSomething'
 
         Context "Default parameter values" {
 
             it "sets the script-level variables correctly" {
                 # act
-                Initialize-FileLog -Path $Path
+                Initialize-FileLog -Path $Path -Source $Source
 
                 # assert
                 $Script:Settings.File.Enabled | Should -Be $true
                 $Script:Settings.File.LogLevel | Should -Be Error
                 $Script:Settings.File.Path | Should -Be $Path
+                $Script:Settings.File.Source | Should -Be $Source
                 $Script:Settings.File.Delimiter| Should -Be ','
             }
 
-        }
+        } # /context
 
         Context "-LogLevel" {
 
@@ -58,13 +80,13 @@ Describe "Initialize-FileLog" -Tag 'unit' {
                 $LogLevel = [Levels]::Information
 
                 # act
-                Initialize-FileLog -Path $Path -LogLevel $LogLevel
+                Initialize-FileLog -Path $Path -Source $Source -LogLevel $LogLevel
 
                 # assert
                 $Script:Settings.File.LogLevel | Should -Be Information
             }
 
-        }
+        } # /context
 
         Context "-Delimiter" {
 
@@ -73,14 +95,14 @@ Describe "Initialize-FileLog" -Tag 'unit' {
                 $Delimiter = ';'
 
                 # act
-                Initialize-FileLog -Path $Path -Delimiter $Delimiter
+                Initialize-FileLog -Path $Path -Source $Source -Delimiter $Delimiter
 
                 # assert
                 $Script:Settings.File.Delimiter| Should -Be $Delimiter
             }
 
-        }
+        } # /context
 
-    }
+    } # /describe
 
-}
+} # /scope
