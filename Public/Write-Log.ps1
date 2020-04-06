@@ -68,12 +68,12 @@ function Write-Log {
         $Values = @()
         $Values += $currentComputer
         $Values += $currentUser
+        $Values += $Script:Settings.File.Source
         $Values += $Timestamp.ToString('yyyy-MM-dd HH:mm:ss')
         $Values += $LogLevel.ToString().ToUpper()
         $Values += $Message
 
         $Value = ( $Values -join $Script:Settings.File.Delimiter )
-        # $Value = "{0},{1},{2},{3},`"{4}`"" -f $currentComputer, $currentUser, $Timestamp.ToString('yyyy-MM-dd HH:mm:ss'), $LogLevel.ToUpper(), $Message
         Write-Debug "Value: $Value"
 
         Add-Content -Path $Script:Settings.File.Path -Value $Value
