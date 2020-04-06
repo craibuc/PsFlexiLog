@@ -83,6 +83,7 @@ $Script:Settings = [pscustomobject]@{
         Enabled = $false
         LogLevel = [Levels].Error
         Path = $null
+        Source = $null
         Delimiter = ','
     }
 
