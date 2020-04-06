@@ -84,6 +84,15 @@ $Script:Settings = [pscustomobject]@{
         LogLevel = [Levels].Error
         Path = $null
         Source = $null
+        Columns = @(
+            'Computer'
+            'User'
+            'Source'
+            'Timestamp'
+            'LogLevel'
+            'Message'
+            'ErrorId'
+        )
         Delimiter = ','
     }
 
