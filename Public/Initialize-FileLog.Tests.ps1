@@ -54,15 +54,19 @@ InModuleScope 'PsFlexiLog' {
         } # /context
 
         # arrange
-        $Path = '~/Desktop/error.log'
+        $Path = "~/Desktop/error.$( (Get-Date).ToString("o") ).log"
         $Source = 'DoSomething'
 
         Context "Default parameter values" {
 
-            it "sets the script-level variables correctly" {
+            BeforeEach {
+                # arrange
+                Mock Add-Content
                 # act
                 Initialize-FileLog -Path $Path -Source $Source
+            }
 
+            it "sets the script-level variables correctly" {
                 # assert
                 $Script:Settings.File.Enabled | Should -Be $true
                 $Script:Settings.File.LogLevel | Should -Be Error
@@ -71,10 +75,25 @@ InModuleScope 'PsFlexiLog' {
                 $Script:Settings.File.Delimiter| Should -Be ','
             }
 
+            it "adds a header row to the log file" {
+                # arrange
+                $ExpectedValue = ( $Script:Settings.File.Columns -join $Script:Settings.File.Delimiter )
+
+                # assert
+                Assert-MockCalled Add-Content -ParameterFilter {
+                    $Value -eq $ExpectedValue
+                }
+            }
+
         } # /context
 
         Context "-LogLevel" {
 
+            BeforeEach {
+                # arrange
+                Mock Add-Content
+            }
+    
             it "sets the script-level variables correctly" {
                 # arrange
                 $LogLevel = [Levels]::Information
@@ -90,6 +109,11 @@ InModuleScope 'PsFlexiLog' {
 
         Context "-Delimiter" {
 
+            BeforeEach {
+                # arrange
+                Mock Add-Content
+            }
+    
             it "sets the script-level variables correctly" {
                 # arrange
                 $Delimiter = ';'
