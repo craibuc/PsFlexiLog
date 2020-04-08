@@ -53,7 +53,7 @@ function Write-Log {
     #
     # console logging
     #
-    # if ( $Script:Settings.Console.Enabled -and $LogLevel -le $Script:Settings.Console.LogLevel )
+    
     if ( Test-ConsoleLog -LogLevel $LogLevel )
     {
         $Value = "{0} - {1} - {2}" -f $Timestamp.ToString('yyyy-MM-dd HH:mm:ss'), $LogLevel.ToString().ToUpper(), $Message
@@ -70,7 +70,7 @@ function Write-Log {
     #
     # file logging
     #
-    # if ( $Script:Settings.File.Enabled -and $LogLevel -le $Script:Settings.File.LogLevel )
+    
     if ( Test-FileLog -LogLevel $LogLevel )
     {
 
@@ -87,7 +87,7 @@ function Write-Log {
         $Values += $null
 
         $Value = ( $Values -join $Script:Settings.File.Delimiter )
-        Write-Debug "Value: $Value"
+        # Write-Debug "Value: $Value"
 
         Add-Content -Path $Script:Settings.File.Path -Value $Value
     }
@@ -95,7 +95,7 @@ function Write-Log {
     #
     # event-log logging
     #
-    # if ( $Script:Settings.EventLog.Enabled -and $LogLevel -le $Script:Settings.EventLog.LogLevel )
+    
     if ( Test-EventLog -LogLevel $LogLevel )
     {
         Write-EventLog -LogName $Script:Settings.EventLog.LogName -Source $Script:Settings.EventLog.Source -EntryType ( $LogLevel.ToString() ) -EventId $Script:Settings.EventLog.EventId -Message $Message
