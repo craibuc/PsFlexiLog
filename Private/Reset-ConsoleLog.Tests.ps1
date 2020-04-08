@@ -8,6 +8,14 @@ InModuleScope 'PsFlexiLog' {
 
     Describe "Reset-ConsoleLog" {
 
+        BeforeEach {
+            # arrange
+            Initialize-ConsoleLog -LogLevel Debug
+
+            # act
+            Reset-ConsoleLog
+        }
+
         It "disables the Console log" {
             $Script:Settings.Console.Enabled | Should -Be $false
         }
