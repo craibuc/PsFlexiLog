@@ -31,7 +31,7 @@ function Initialize-FileLog {
     $Script:Settings.File.Delimiter = $Delimiter
 
     $Value = ( $Script:Settings.File.Columns -join $Script:Settings.File.Delimiter )
-    Write-Debug "Value: $Value"
+    # Write-Debug "Value: $Value"
 
     Add-Content -Path $Script:Settings.File.Path -Value $Value
 
