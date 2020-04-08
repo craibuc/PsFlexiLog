@@ -6,7 +6,7 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 
 InModuleScope 'PsFlexiLog' {
 
-    Describe "Reset-FileLog" {
+    Describe "Reset-FileLog" -Tag 'unit' {
 
         BeforeEach {
             # arrange
