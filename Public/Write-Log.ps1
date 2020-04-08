@@ -83,7 +83,7 @@ function Write-Log {
         $Values += $Script:Settings.File.Source
         $Values += $Timestamp.ToString('yyyy-MM-dd HH:mm:ss')
         $Values += $LogLevel.ToString().ToUpper()
-        $Values += $Message
+        $Values += "`$Message`""
         $Values += $null
 
         $Value = ( $Values -join $Script:Settings.File.Delimiter )
