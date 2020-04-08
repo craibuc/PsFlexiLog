@@ -6,33 +6,27 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 
 InModuleScope PsFlexiLog {
 
-    Describe "Write-Log" {
-
-        # arrange
-        $DefaultMessage = 'lorem ipsum'
-
-        # ensure that time doesn't vary when running the tests
-        $Now = (Get-Date)
-        Mock Get-Date { $Now }
-        $Timestamp = $Now.ToString('yyyy-MM-dd HH:mm:ss')
+    Describe "Write-Log" -Tag 'unit' {
     
         Context "Parameter validation" {
+            # act
+            $Command = Get-Command "Write-Log"
 
             Context "-Message" {
                 it "is a [String]" {
-                    Get-Command "Write-Log" | Should -HaveParameter 'Message' -Type string
+                    $Command | Should -HaveParameter 'Message' -Type string
                 }
                 it "is mandatory" {
-                    Get-Command "Write-Log" | Should -HaveParameter 'Message' -Mandatory
+                    $Command | Should -HaveParameter 'Message' -Mandatory
                 }
             }
 
             Context "-LogLevel" {
                 It "is a [Levels] enum" {
-                    Get-Command "Write-Log" | Should -HaveParameter 'LogLevel' -Type [Levels]
+                    $Command | Should -HaveParameter 'LogLevel' -Type [Levels]
                 }
                 it "is optional" {
-                    Get-Command "Write-Log" | Should -HaveParameter 'LogLevel' -Not -Mandatory
+                    $Command | Should -HaveParameter 'LogLevel' -Not -Mandatory
                 }
                 It "has a default value of 'Error'" -skip {
                     $true | Should -Be $false
@@ -41,10 +35,10 @@ InModuleScope PsFlexiLog {
 
             Context "-Exception" {
                 it "is an [Exception]" {
-                    Get-Command "Write-Log" | Should -HaveParameter 'Exception' -Type exception
+                    $Command | Should -HaveParameter 'Exception' -Type exception
                 }
                 it "is optional" {
-                    Get-Command "Write-Log" | Should -HaveParameter 'Exception' -Not -Mandatory
+                    $Command | Should -HaveParameter 'Exception' -Not -Mandatory
                 }
             }
 
@@ -52,8 +46,22 @@ InModuleScope PsFlexiLog {
 
         Context "Console logging enabled" {
 
+            # arrange
+            # ensure that time doesn't vary when running the tests
+            $Now = (Get-Date)
+            Mock Get-Date { $Now }
+
+            $Expected = [pscustomobject]@{
+                LogLevel = [Levels]::Error
+                Message = 'lorem ipsum'
+                Timestamp = $Now.ToString('yyyy-MM-dd HH:mm:ss')
+            }
+
             BeforeEach {
-                Initialize-ConsoleLog
+                Initialize-ConsoleLog -LogLevel Debug # use most verbose
+            }
+            AfterEach {
+                Reset-ConsoleLog
             }
 
             $TestCases = @( 
@@ -67,45 +75,57 @@ InModuleScope PsFlexiLog {
                 param ($LogLevel)
 
                 # arrange
-                $Expected = "{0} - {1} - {2}" -f $Timestamp, $LogLevel.ToString().ToUpper(), $DefaultMessage
-
                 Mock "Write-$LogLevel"
 
                 # act
-                Write-Log -Message $DefaultMessage -LogLevel $LogLevel
+                Write-Log -Message $Expected.Message -LogLevel $LogLevel
 
                 # assert
+                $ExpectedValue = "{0} - {1} - {2}" -f $Expected.Timestamp, $LogLevel.ToString().ToUpper(), $Expected.Message
                 Assert-MockCalled "Write-$LogLevel" -ParameterFilter {
-                    $Message -eq $Expected
+                    $Message -eq $ExpectedValue
                 }
+
             }
         }
 
         Context "File logging enabled" {
 
             # arrange
-            $DefaultPath = './test.log'
-            $DefaultDelimiter = ','
-            $LogLevel = [Levels]::Error
+            # ensure that time doesn't vary when running the tests
+            $Now = (Get-Date)
+            Mock Get-Date { $Now }
+
+            $Expected = [pscustomobject]@{
+                Path = './test.log'
+                Source = 'Source'
+                LogLevel = [Levels]::Error
+                Message = 'lorem ipsum'
+                Delimiter = ','
+                Timestamp = $Now.ToString('yyyy-MM-dd HH:mm:ss')
+            }
 
             BeforeEach {
-                Initialize-FileLog -Path $DefaultPath
+                Initialize-FileLog -Path $Expected.Path -Source $Expected.Source
+            }
+            AfterEach {
+                Reset-FileLog
             }
 
             Context "With default parameter values" {
 
                 it "calls Add-Content with the expected values" {
                     # arrange
+                    Mock Write-Error
                     Mock Add-Content
 
                     # act
-                    Write-Log -Message $DefaultMessage -LogLevel $LogLevel
+                    Write-Log -Message $Expected.Message -LogLevel $Expected.LogLevel
 
                     # assert
-                    $Expected = ($Timestamp, $LogLevel.ToString().ToUpper(), $DefaultMessage) -join $DefaultDelimiter
-
+                    $ExpectedValue = ($Expected.Timestamp, $Expected.LogLevel.ToString().ToUpper(), $Expected.Message) -join $Expected.Delimiter
                     Assert-MockCalled Add-Content -ParameterFilter {
-                        $Value -like "*$Expected"
+                        $Value -like "*$ExpectedValue*" # beware of ending ','
                     }
                 }
 
