@@ -76,12 +76,12 @@ $Script:Settings = [pscustomobject]@{
 
     Console = [pscustomobject] @{
         Enabled = $false
-        LogLevel = [Levels].Information
+        LogLevel = [Levels]::Information
     }
 
     File = [pscustomobject] @{
         Enabled = $false
-        LogLevel = [Levels].Information
+        LogLevel = [Levels]::Information
         Path = $null
         Source = $null
         Columns = @(
@@ -98,7 +98,7 @@ $Script:Settings = [pscustomobject]@{
 
     EventLog = [pscustomobject] @{
         Enabled = $false
-        LogLevel = [Levels].Error
+        LogLevel = [Levels]::Error
         LogName = $null
         Source = $null
         EventId = 1000
