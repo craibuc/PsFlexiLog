@@ -12,7 +12,7 @@ function Initialize-EventLogLog {
         [Levels]$LogLevel = [Levels]::Error
     )
 
-    Write-Debug $MyInvocation.MyCommand.Name
+    # Write-Debug $MyInvocation.MyCommand.Name
     # Write-Debug "LogName: $LogName"
     # Write-Debug "Source: $Source"
     # Write-Debug "LogLevel: $LogLevel"

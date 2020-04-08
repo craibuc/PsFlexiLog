@@ -16,7 +16,7 @@ function Initialize-FileLog {
         [string]$Delimiter=','
     )
 
-    Write-Debug $MyInvocation.MyCommand.Name
+    # Write-Debug $MyInvocation.MyCommand.Name
     # Write-Debug "Path: $Path"
     # Write-Debug "Source: $Source"
     # Write-Debug "LogLevel: $LogLevel"

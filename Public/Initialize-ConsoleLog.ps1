@@ -6,7 +6,7 @@ function Initialize-ConsoleLog {
         [Levels]$LogLevel = [Levels]::Information
     )
 
-    Write-Debug $MyInvocation.MyCommand.Name
+    # Write-Debug $MyInvocation.MyCommand.Name
     # Write-Debug "LogLevel: $LogLevel"
 
     $Script:Settings.Console.Enabled = $true
