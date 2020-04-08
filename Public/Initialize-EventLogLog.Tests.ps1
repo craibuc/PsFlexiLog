@@ -1,40 +1,54 @@
+Import-Module PsFlexiLog -Force
+
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
-Describe "Initialize-EventLogLog" -Tag 'unit' {
+InModuleScope 'PsFlexiLog' {
 
-    Context "Parameter validation" {
-        Context "Source" {
-            It "it is a string" {
-                Get-Command "Initialize-EventLogLog" | Should -HaveParameter 'Source' -Type string
+    Describe "Initialize-EventLogLog" -Tag 'unit' {
+
+        Context "Parameter validation" {
+            # arrange
+            $Command = Get-Command "Initialize-EventLogLog"
+
+            Context "Source" {
+                # arrange
+                $ParameterName = 'Source'
+
+                It "it is a string" {
+                    $Command | Should -HaveParameter $ParameterName -Type string
+                }
+                It "it is mandatory" {
+                    $Command | Should -HaveParameter $ParameterName -Type string -Mandatory
+                }
             }
-            It "it is mandatory" {
-                Get-Command "Initialize-EventLogLog" | Should -HaveParameter 'Source' -Type string -Mandatory
+
+            Context "LogName" {
+                # arrange
+                $ParameterName = 'LogName'
+
+                It "it is a string" {
+                    $Command | Should -HaveParameter $ParameterName -Type string
+                }
+                It "its default value is 'Application'" -skip {
+                    $true | Should -Be $false
+                }
             }
+
+            Context "LogLevel" {
+                # arrange
+                $ParameterName = 'LogLevel'
+
+                It "it is an enumeration of type Levels" {
+                    $Command | Should -HaveParameter $ParameterName -Type [Levels]
+                }
+                It "its default value is 'Error'" -skip {
+                    $true | Should -Be $false
+                }
+            }
+
         }
-
-        Context "LogName" {
-            It "it is a string" {
-                Get-Command "Initialize-EventLogLog" | Should -HaveParameter 'LogName' -Type string
-            }
-            It "its default value is 'Application'" -skip {
-                $true | Should -Be $false
-            }
-        }
-
-        Context "LogLevel" {
-            It "it is an enumeration of type Levels" {
-                Get-Command "Initialize-EventLogLog" | Should -HaveParameter 'LogLevel' -Type [Levels]
-            }
-            It "its default value is 'Error'" -skip {
-                $true | Should -Be $false
-            }
-        }
-
-    }
-
-    InModuleScope 'PsFlexiLog' {
 
         # arrange
         $Source = 'Import-Something'
