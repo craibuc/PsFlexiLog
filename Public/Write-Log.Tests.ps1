@@ -100,7 +100,7 @@ InModuleScope PsFlexiLog {
                 Path = './test.log'
                 Source = 'Source'
                 LogLevel = [Levels]::Error
-                Message = 'lorem ipsum'
+                Message = 'lorem, ipsum'
                 Delimiter = ','
                 Timestamp = $Now.ToString('yyyy-MM-dd HH:mm:ss')
             }
@@ -123,7 +123,7 @@ InModuleScope PsFlexiLog {
                     Write-Log -Message $Expected.Message -LogLevel $Expected.LogLevel
 
                     # assert
-                    $ExpectedValue = ($Expected.Timestamp, $Expected.LogLevel.ToString().ToUpper(), $Expected.Message) -join $Expected.Delimiter
+                    $ExpectedValue = ($Expected.Timestamp, $Expected.LogLevel.ToString().ToUpper(), "`"$Expected.Message`"") -join $Expected.Delimiter
                     Assert-MockCalled Add-Content -ParameterFilter {
                         $Value -like "*$ExpectedValue*" # beware of ending ','
                     }
