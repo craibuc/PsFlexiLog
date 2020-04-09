@@ -123,8 +123,10 @@ InModuleScope PsFlexiLog {
                     Write-Log -Message $Expected.Message -LogLevel $Expected.LogLevel
 
                     # assert
-                    $ExpectedValue = ($Expected.Timestamp, $Expected.LogLevel.ToString().ToUpper(), "`"$Expected.Message`"") -join $Expected.Delimiter
+                    $ExpectedValue = ($Expected.Timestamp, $Expected.LogLevel.ToString().ToUpper(), "`"$( $Expected.Message )`"") -join $Expected.Delimiter
+                    # Write-Debug "ExpectedValue: $ExpectedValue"
                     Assert-MockCalled Add-Content -ParameterFilter {
+                        # Write-Debug "Value: $Value"
                         $Value -like "*$ExpectedValue*" # beware of ending ','
                     }
                 }
