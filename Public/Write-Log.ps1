@@ -8,8 +8,14 @@ The message to be written.
 .PARAMETER LogLevel
 The logging level.
 
-.PARAMETER LogLevel
+.PARAMETER FunctionName
+The name of the function calling this function.
+
+.PARAMETER Exception
 The exception to be logged.
+
+.LINK
+https://www.powershellgallery.com/packages/dbatools/0.9.187/Content/internal%5Cfunctions%5CWrite-Message.ps1
 
 #>
 function Write-Log {
@@ -21,6 +27,9 @@ function Write-Log {
 
         [Parameter()]
         [Levels]$LogLevel = [Levels]::Information,
+
+        [Parameter()]
+        [string]$FunctionName = ((Get-PSCallStack)[0].Command),
 
         [Parameter()]
         [exception]$Exception
@@ -56,7 +65,7 @@ function Write-Log {
     
     if ( Test-ConsoleLog -LogLevel $LogLevel )
     {
-        $Value = "{0} - {1} - {2}" -f $Timestamp.ToString('yyyy-MM-dd HH:mm:ss'), $LogLevel.ToString().ToUpper(), $Message
+        $Value = "{0} - {1} - {2}" -f $Timestamp.ToString('HH:mm:ss'), $FunctionName, $Message
 
         switch ($LogLevel) {
             "Error" { Write-Error $Value }
