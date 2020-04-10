@@ -1,6 +1,7 @@
 Import-Module PsFlexiLog -Force
 
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
+$ScriptName = Split-Path -Path $PSCommandPath -Leaf
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
@@ -12,33 +13,53 @@ InModuleScope PsFlexiLog {
             # act
             $Command = Get-Command "Write-Log"
 
-            Context "-Message" {
+            Context "Message" {
+                $ParameterName = 'Message'
+
                 it "is a [String]" {
-                    $Command | Should -HaveParameter 'Message' -Type string
+                    $Command | Should -HaveParameter $ParameterName -Type string
                 }
                 it "is mandatory" {
-                    $Command | Should -HaveParameter 'Message' -Mandatory
+                    $Command | Should -HaveParameter $ParameterName -Mandatory
                 }
             }
 
-            Context "-LogLevel" {
+            Context "LogLevel" {
+                $ParameterName = 'LogLevel'
+
                 It "is a [Levels] enum" {
-                    $Command | Should -HaveParameter 'LogLevel' -Type [Levels]
+                    $Command | Should -HaveParameter $ParameterName -Type [Levels]
                 }
                 it "is optional" {
-                    $Command | Should -HaveParameter 'LogLevel' -Not -Mandatory
+                    $Command | Should -HaveParameter $ParameterName -Not -Mandatory
                 }
                 It "has a default value of 'Error'" -skip {
                     $true | Should -Be $false
                 }
             }
 
-            Context "-Exception" {
-                it "is an [Exception]" {
-                    $Command | Should -HaveParameter 'Exception' -Type exception
+            Context "FunctionName" {
+                $ParameterName = 'FunctionName'
+
+                It "is a [String]" {
+                    $Command | Should -HaveParameter $ParameterName -Type string
                 }
                 it "is optional" {
-                    $Command | Should -HaveParameter 'Exception' -Not -Mandatory
+                    $Command | Should -HaveParameter $ParameterName -Not -Mandatory
+                }
+                It "has a default value of the calling function" -skip {
+                    $true | Should -Be $ScriptName
+                }
+            }
+
+            Context "Exception" {
+                $ParameterName = 'Exception'
+
+                it "is an [Exception]" {
+                    $Command | Should -HaveParameter $ParameterName -Type exception
+                }
+                it "is optional" {
+                    $Command | Should -HaveParameter $ParameterName -Not -Mandatory
                 }
             }
 
@@ -54,7 +75,8 @@ InModuleScope PsFlexiLog {
             $Expected = [pscustomobject]@{
                 LogLevel = [Levels]::Error
                 Message = 'lorem ipsum'
-                Timestamp = $Now.ToString('yyyy-MM-dd HH:mm:ss')
+                FunctionName = 'Write-Log.Tests.ps1'
+                Timestamp = $Now.ToString('HH:mm:ss')
             }
 
             BeforeEach {
@@ -78,11 +100,14 @@ InModuleScope PsFlexiLog {
                 Mock "Write-$LogLevel"
 
                 # act
-                Write-Log -Message $Expected.Message -LogLevel $LogLevel
+                Write-Log -Message $Expected.Message -LogLevel $LogLevel -FunctionName $ScriptName
 
                 # assert
-                $ExpectedValue = "{0} - {1} - {2}" -f $Expected.Timestamp, $LogLevel.ToString().ToUpper(), $Expected.Message
+                $ExpectedValue = "{0} - {1} - {2}" -f $Expected.Timestamp, $Expected.FunctionName, $Expected.Message
+                # Write-Debug "ExpectedValue: $ExpectedValue"
+
                 Assert-MockCalled "Write-$LogLevel" -ParameterFilter {
+                    # Write-Debug "Message: $Message"
                     $Message -eq $ExpectedValue
                 }
 
