@@ -122,7 +122,7 @@ InModuleScope PsFlexiLog {
             Mock Get-Date { $Now }
 
             $Expected = [pscustomobject]@{
-                Path = './test.log'
+                Path = './Write-Log.log'
                 Source = 'Source'
                 LogLevel = [Levels]::Error
                 Message = 'lorem, ipsum'
@@ -131,6 +131,11 @@ InModuleScope PsFlexiLog {
             }
 
             BeforeEach {
+                # arrange
+                Mock Write-Error
+                Mock Add-Content # prevents file from being created
+
+                # act
                 Initialize-FileLog -Path $Expected.Path -Source $Expected.Source
             }
             AfterEach {
@@ -140,10 +145,6 @@ InModuleScope PsFlexiLog {
             Context "With default parameter values" {
 
                 it "calls Add-Content with the expected values" {
-                    # arrange
-                    Mock Write-Error
-                    Mock Add-Content
-
                     # act
                     Write-Log -Message $Expected.Message -LogLevel $Expected.LogLevel
 
