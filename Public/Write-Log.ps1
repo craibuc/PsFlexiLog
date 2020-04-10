@@ -65,7 +65,7 @@ function Write-Log {
     
     if ( Test-ConsoleLog -LogLevel $LogLevel )
     {
-        $Value = "{0} - {1} - {2}" -f $Timestamp.ToString('HH:mm:ss'), $FunctionName, $Message
+        $Value = "[{0}] {1} - {2}" -f $Timestamp.ToString('HH:mm:ss'), $FunctionName, $Message
 
         switch ($LogLevel) {
             "Error" { Write-Error $Value }

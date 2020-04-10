@@ -103,7 +103,7 @@ InModuleScope PsFlexiLog {
                 Write-Log -Message $Expected.Message -LogLevel $LogLevel -FunctionName $ScriptName
 
                 # assert
-                $ExpectedValue = "{0} - {1} - {2}" -f $Expected.Timestamp, $Expected.FunctionName, $Expected.Message
+                $ExpectedValue = "[{0}] {1} - {2}" -f $Expected.Timestamp, $Expected.FunctionName, $Expected.Message
                 # Write-Debug "ExpectedValue: $ExpectedValue"
 
                 Assert-MockCalled "Write-$LogLevel" -ParameterFilter {
