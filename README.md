@@ -50,3 +50,15 @@ Galadriel.lan,craig,Do-Something,2020-04-08 11:06:26,INFORMATION,information mes
 ## Contributors
 
 * 
+
+## Links
+
+- [Parse log files with PowerShell](https://4sysops.com/archives/parse-log-files-with-powershell/)
+
+## References
+
+- [Building Logs for CMTrace with PowerShell](https://adamtheautomator.com/building-logs-for-cmtrace-powershell/)
+- [dbatools](https://www.powershellgallery.com/packages/dbatools/0.9.187/Content/internal%5Cfunctions%5CWrite-Message.ps1)
+- [EZLog](https://github.com/apetitjean/EZLog)
+- [PSMultiLog](https://github.com/platta/PSMultiLog)
+- [StreamLogging](https://github.com/alekdavis/StreamLogging)
