@@ -1,6 +1,19 @@
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
+# /PsFlexiLog
+$ProjectDirectory = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
+
+# /PsFlexiLog/PsFlexiLog/Public
+$PublicPath = Join-Path $ProjectDirectory "/PsFlexiLog/Public/"
+
+# /PsFlexiLog/Tests/Fixtures/
+# $FixturesDirectory = Join-Path $ProjectDirectory "/Tests/Fixtures/"
+
+# Initialize-ConsoleLog.ps1
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+
+# . /PsFlexiLog/PsFlexiLog/Public/Initialize-ConsoleLog.ps1
+. (Join-Path $PublicPath $sut)
+
+Import-Module (Join-Path $ProjectDirectory PsFlexiLog) -Force
 
 Describe "Initialize-ConsoleLog" -Tag 'unit' {
 

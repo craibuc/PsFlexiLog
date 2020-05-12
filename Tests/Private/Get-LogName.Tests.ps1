@@ -1,6 +1,17 @@
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
+# /PsFlexiLog
+$ProjectDirectory = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
+
+# /PsFlexiLog/PsFlexiLog/Private
+$PrivatePath = Join-Path $ProjectDirectory "/PsFlexiLog/Private/"
+
+# /PsFlexiLog/Tests/Fixtures/
+# $FixturesDirectory = Join-Path $ProjectDirectory "/Tests/Fixtures/"
+
+# Get-LogName.ps1
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+
+# . /PsFlexiLog/PsFlexiLog/Private/Get-LogName.ps1
+. (Join-Path $PrivatePath $sut)
 
 Describe "Get-LogName" -Tag 'unit' {
 

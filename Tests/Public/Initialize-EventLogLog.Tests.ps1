@@ -1,8 +1,19 @@
-Import-Module PsFlexiLog -Force
+# /PsFlexiLog
+$ProjectDirectory = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
+# /PsFlexiLog/PsFlexiLog/Public
+$PublicPath = Join-Path $ProjectDirectory "/PsFlexiLog/Public/"
+
+# /PsFlexiLog/Tests/Fixtures/
+# $FixturesDirectory = Join-Path $ProjectDirectory "/Tests/Fixtures/"
+
+# Initialize-EventLogLog.ps1
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+
+# . /PsFlexiLog/PsFlexiLog/Public/Initialize-EventLogLog.ps1
+. (Join-Path $PublicPath $sut)
+
+Import-Module (Join-Path $ProjectDirectory PsFlexiLog) -Force
 
 InModuleScope 'PsFlexiLog' {
 
